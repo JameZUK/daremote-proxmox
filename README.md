@@ -1,16 +1,16 @@
 # NAME
 
-**proxmox-scanner** - Scan Proxmox hosts for Linux guests and generate a JSON inventory.
+**proxmox-daremote** - Scan Proxmox hosts for Linux guests and generate a JSON inventory.
 
 # SYNOPSIS
 
-**proxmox-scanner** --add-host *HOSTNAME_OR_IP* [--insecure] [-c *CONFIG_FILE*]
+**proxmox-daremote** --add-host *HOSTNAME_OR_IP* [--insecure] [-c *CONFIG_FILE*]
 
-**proxmox-scanner** [-o *OUTPUT_FILE*] [-c *CONFIG_FILE*] [-v]
+**proxmox-daremote** [-o *OUTPUT_FILE*] [-c *CONFIG_FILE*] [-v]
 
 # DESCRIPTION
 
-**proxmox-scanner** connects to one or more Proxmox VE hosts using stored user credentials, scans for running Linux Containers (LXC) and Virtual Machines (QEMU/KVM), attempts to determine a usable network address (FQDN or IP) for each guest, and outputs the results as a JSON file.
+**proxmox-daremote** connects to one or more Proxmox VE hosts using stored user credentials, scans for running Linux Containers (LXC) and Virtual Machines (QEMU/KVM), attempts to determine a usable network address (FQDN or IP) for each guest, and outputs the results as a JSON file.
 
 The script uses password-based authentication. It securely prompts for the password when adding a host configuration and during scans. To minimize repeated prompts during a scan, it will first try the password that successfully authenticated against the *previous* host in the same run before prompting again if that fails.
 
@@ -68,17 +68,17 @@ The script attempts to set secure permissions (read/write for user only) on the 
 # **WORKFLOW**
 
 1. **Add Hosts:** For each Proxmox host you want to scan, run the script with the \--add-host option:  
-   proxmox-scanner \--add-host pve1.example.com
+   proxmox-daremote \--add-host pve1.example.com
 
    or, if using self-signed certificates:  
-   proxmox-scanner \--add-host 192.168.1.100 \--insecure
+   proxmox-daremote \--add-host 192.168.1.100 \--insecure
 
    You will be prompted for the username (e.g., root@pam) and password for that host. The script will test the connection and save the username to the configuration file if successful. Repeat for all hosts.  
 2. **Scan Hosts:** To perform a scan using the saved configuration, run the script without \--add-host:  
-   proxmox-scanner
+   proxmox-daremote
 
    or specify a custom output file:  
-   proxmox-scanner \-o my\_inventory.json
+   proxmox-daremote \-o my\_inventory.json
 
    The script will iterate through the hosts in the configuration file. For each host, it will attempt to authenticate. It will first try the password that worked for the previous host (if any). If that fails, it will prompt you for the password for the current host's configured user. Once connected, it scans the nodes for Linux guests.
 
@@ -125,19 +125,19 @@ This script uses **username and password** authentication only.
 # **EXAMPLES**
 
 1. **Add a host with standard SSL:**  
-   ./proxmox-scanner \--add-host pve.mydomain.local
+   ./proxmox-daremote \--add-host pve.mydomain.local
 
    *(Prompts for user@realm and password)*  
 2. **Add a host with a self-signed certificate:**  
-   ./proxmox-scanner \--add-host 10.0.0.5 \--insecure
+   ./proxmox-daremote \--add-host 10.0.0.5 \--insecure
 
    *(Prompts for user@realm and password)*  
 3. **Run** a scan using the default config **and output files:**  
-   ./proxmox-scanner
+   ./proxmox-daremote
 
    *(Prompts for password(s) as needed)*  
 4. **Run a scan with verbose output and a custom output file:**  
-   ./proxmox-scanner \-v \-o /path/to/inventory.json \-c /path/to/my\_config.json
+   ./proxmox-daremote \-v \-o /path/to/inventory.json \-c /path/to/my\_config.json
 
    *(Prompts for password(s) as needed)*
 
